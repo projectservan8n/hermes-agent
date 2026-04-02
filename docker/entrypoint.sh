@@ -48,9 +48,5 @@ if [ -d "$INSTALL_DIR/skills" ]; then
     python3 "$INSTALL_DIR/tools/skills_sync.py"
 fi
 
-# Default to gateway start for cloud/Railway deployments (no TTY)
-if [ $# -eq 0 ]; then
-    exec hermes gateway start
-else
-    exec hermes "$@"
-fi
+# Run gateway in foreground (correct for Docker/Railway — not systemd)
+exec hermes gateway
