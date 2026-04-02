@@ -19,8 +19,6 @@ if [ ! -f "$HERMES_HOME/config.yaml" ]; then
 fi
 
 # Workspace init files from env vars (Railway deployment).
-# Set WORKSPACE_INIT_<FILENAME> as base64-encoded content in Railway env vars.
-# Supported: SOUL_MD, MEMORY_MD, TOOLS_MD, USER_MD, AGENTS_MD, IDENTITY_MD, HEARTBEAT_MD
 declare -A WORKSPACE_FILES=(
   ["SOUL_MD"]="SOUL.md"
   ["MEMORY_MD"]="MEMORY.md"
@@ -50,4 +48,9 @@ if [ -d "$INSTALL_DIR/skills" ]; then
     python3 "$INSTALL_DIR/tools/skills_sync.py"
 fi
 
-exec hermes "$@"
+# Default to gateway start for cloud/Railway deployments (no TTY)
+if [ $# -eq 0 ]; then
+    exec hermes gateway start
+else
+    exec hermes "$@"
+fi
